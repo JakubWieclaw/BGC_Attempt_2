@@ -1,9 +1,78 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
     tools:context=".UserView">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Account Summary -->
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Username: "
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp" />
+
+    <TextView
+        android:id="@+id/numGamesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Number of Games: "
+        android:textSize="20sp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/numAddOnsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Number of Add-Ons: "
+        android:textSize="20sp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/lastSyncTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Last Sync Date: "
+        android:textSize="20sp"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Buttons -->
+    <Button
+        android:id="@+id/gamesButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="Games"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/addOnsButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="Add-Ons"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/syncButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="Synchronize"
+        android:textSize="24sp"
+        android:layout_marginBottom="32dp" />
+
+    <Button
+        android:id="@+id/clearDataButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="Clear Data"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@android:color/holo_red_dark" />
+
+</LinearLayout>
