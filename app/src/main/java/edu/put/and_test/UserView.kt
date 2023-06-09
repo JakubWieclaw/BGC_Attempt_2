@@ -8,9 +8,12 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import edu.put.and_test.models.User
 import java.io.File
 
 class UserView : AppCompatActivity() {
+
+
 
     private lateinit var usernameTextView: TextView
     private lateinit var numGamesTextView: TextView
@@ -25,6 +28,8 @@ class UserView : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_view)
 
+        val dataManager = DataManager(this, "https://www.boardgamegeek.com/xmlapi2/")
+
         usernameTextView = findViewById(R.id.usernameTextView)
         numGamesTextView = findViewById(R.id.numGamesTextView)
         numAddOnsTextView = findViewById(R.id.numAddOnsTextView)
@@ -35,15 +40,13 @@ class UserView : AppCompatActivity() {
         clearDataButton = findViewById(R.id.clearDataButton)
 
         // Retrieve user account data and display it
-        val username = "JohnDoe"
-        val numGames = 10
-        val numAddOns = 5
-        val lastSyncDate = "2023-06-08"
 
-        usernameTextView.text = "Username: $username"
-        numGamesTextView.text = "Number of Games: $numGames"
-        numAddOnsTextView.text = "Number of Add-Ons: $numAddOns"
-        lastSyncTextView.text = "Last Sync Date: $lastSyncDate"
+        val user: User = dataManager.GetSavedUser()!!
+
+        usernameTextView.text = "Username: ${user.username}"
+        numGamesTextView.text = "Number of Games: ${user.numGames}"
+        numAddOnsTextView.text = "Number of Add-Ons: ${user.numAddOns}"
+        lastSyncTextView.text = "Last Sync Date: ${user.lastSyncDate}"
 
         // Set click listeners for buttons
 //        gamesButton.setOnClickListener {

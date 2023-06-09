@@ -7,23 +7,30 @@ import android.os.Bundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-
-
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
+import edu.put.and_test.models.User
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val dataManager =
+        try {
+            DataManager(this, "https://www.boardgamegeek.com/xmlapi2/")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return
+        }
+
+
+        if (dataManager.CheckUser()) {
+            val intent = Intent(this@MainActivity, UserView::class.java)
+            startActivity(intent)
+            return
+        }
 
         val startButton: Button = findViewById(R.id.button_start)
 
@@ -33,43 +40,18 @@ class MainActivity : AppCompatActivity() {
 
             // Perform API request to search for the user's game collection
             GlobalScope.launch(Dispatchers.IO) {
-                val apiResponse = performGameCollectionRequest(username)
+                val user: User? = dataManager.GetUser(username)
 
                 runOnUiThread {
-                    handleApiResponse(apiResponse, username)
+                    handleApiResponse(user, username)
                 }
             }
         }
     }
 
-    private fun performGameCollectionRequest(username: String): String {
-        val apiUrl = "https://www.boardgamegeek.com/xmlapi2/collection?username=$username"
-        val url = URL(apiUrl)
-        val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "GET"
 
-        val responseCode = connection.responseCode
-
-        return if (responseCode == HttpURLConnection.HTTP_OK) {
-            val reader = BufferedReader(InputStreamReader(connection.inputStream))
-            val response = StringBuilder()
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-                response.append(line)
-            }
-            reader.close()
-
-            val apiResponse = response.toString()
-
-            apiResponse
-        } else {
-            ""
-        }
-    }
-
-
-    private fun handleApiResponse(apiResponse: String, username: String) {
-        if (apiResponse.contains("<error>")) {
+    private fun handleApiResponse(user: User?, username: String) {
+        if (user == null) {
             // User not found, show a notification
             Toast.makeText(
                 this@MainActivity,
