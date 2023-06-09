@@ -6,11 +6,9 @@ import android.database.sqlite.SQLiteDatabase
 import edu.put.and_test.models.Game
 import android.database.Cursor
 import edu.put.and_test.models.User
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
-
+// DBConnector class responsible for managing database operations
 class DBConnector(private val context: Context) {
 
     private val databaseName = "mydatabase.db"
@@ -26,13 +24,13 @@ class DBConnector(private val context: Context) {
             e.printStackTrace()
         }
 
-
         // Create the "Games" table if it doesn't exist
         CreateCollectionTableIfNotExist("Games")
 
         // Create the "Expansions" table if it doesn't exist
         CreateCollectionTableIfNotExist("Expansions")
 
+        // Create the "User" table if it doesn't exist
         CreateUserTableIfNotExist()
     }
 
@@ -40,6 +38,7 @@ class DBConnector(private val context: Context) {
         database = context.openOrCreateDatabase(databaseName, Context.MODE_PRIVATE, null)
     }
 
+    // Create the collection table if it doesn't exist
     private fun CreateCollectionTableIfNotExist(tableName: String) {
         val createTableQuery = "CREATE TABLE IF NOT EXISTS $tableName (" +
                 "name TEXT," +
@@ -50,6 +49,7 @@ class DBConnector(private val context: Context) {
         database.execSQL(createTableQuery)
     }
 
+    // Create the "User" table if it doesn't exist
     private fun CreateUserTableIfNotExist() {
         val createTableQuery = "CREATE TABLE IF NOT EXISTS User (" +
                 "username TEXT, " +
@@ -58,6 +58,7 @@ class DBConnector(private val context: Context) {
         database.execSQL(createTableQuery)
     }
 
+    // Retrieve a list of games from the "Games" table
     fun GetGames(): List<Game> {
         val games = mutableListOf<Game>()
 
@@ -79,6 +80,7 @@ class DBConnector(private val context: Context) {
         return games
     }
 
+    // Store a list of games in the "Games" table
     fun GamesToDB(games: List<Game>) {
         database.delete("Games", null, null)
 
@@ -93,6 +95,7 @@ class DBConnector(private val context: Context) {
         }
     }
 
+    // Retrieve a list of expansions from the "Expansions" table
     fun GetExpansions(): List<Game> {
         val expansions = mutableListOf<Game>()
 
@@ -114,6 +117,7 @@ class DBConnector(private val context: Context) {
         return expansions
     }
 
+    // Store a list of expansions in the "Expansions" table
     fun ExpansionsToDB(expansions: List<Game>) {
         database.delete("Expansions", null, null)
 
@@ -128,19 +132,8 @@ class DBConnector(private val context: Context) {
         }
     }
 
-//    fun InsertUser(username: String, date: Date) {
-//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-//        val dateString = dateFormat.format(date)
-//
-//        val values = ContentValues()
-//        values.put("username", username)
-//        values.put("lastSyncDate", dateString)
-//
-//        database.insert("User", null, values)
-//    }
-
+    // Insert a new user into the "User" table
     fun InsertUser(username: String, date: Date) {
-
         val query = "INSERT INTO User (username, lastSyncDate) VALUES (?, ?)"
         val statement = database.compileStatement(query)
 
@@ -150,8 +143,7 @@ class DBConnector(private val context: Context) {
         statement.executeInsert()
     }
 
-
-
+    // Retrieve the user from the "User" table
     fun GetUser(): User? {
         val cursor: Cursor = database.query("User", null, null, null, null, null, null)
         if (!cursor.moveToFirst()) {
