@@ -10,6 +10,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import edu.put.and_test.models.User
+import edu.put.and_test.R
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,31 +41,32 @@ class MainActivity : AppCompatActivity() {
             val usernameEditText: EditText = findViewById(R.id.username)
             val username = usernameEditText.text.toString()
 
-            // Perform API request to search for the user's game collection in a background coroutine
-            GlobalScope.launch(Dispatchers.IO) {
-                val user: User? = dataManager.GetUser(username)
-
-                // Handle the API response on the UI thread
-                runOnUiThread {
-                    handleApiResponse(user, username)
+            GlobalScope.launch(Dispatchers.Main) {
+                try {
+                    val user: User? = withContext(Dispatchers.IO) {
+                        dataManager.GetUser(username)
+                    }
+                    handleApiResponse(user)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }
     }
 
-    // Handle the API response and take appropriate actions
-    private fun handleApiResponse(user: User?, username: String) {
-        if (user == null) {
-            // User not found, show a notification
-            Toast.makeText(
-                this@MainActivity,
-                "User not found, please try again.",
-                Toast.LENGTH_SHORT
-            ).show()
-        } else {
-            // User found, navigate to UserView activity
-            val intent = Intent(this@MainActivity, UserView::class.java)
-            startActivity(intent)
+        // Handle the API response and take appropriate actions
+        private fun handleApiResponse(user: User?) {
+            if (user == null) {
+                // User not found, show a notification
+                Toast.makeText(
+                    this@MainActivity,
+                    "User not found, please try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                // User found, navigate to UserView activity
+                val intent = Intent(this@MainActivity, UserView::class.java)
+                startActivity(intent)
+            }
         }
     }
-}

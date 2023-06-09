@@ -1,9 +1,11 @@
 package edu.put.and_test
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import edu.put.and_test.models.User
 
 class UserView : AppCompatActivity() {
@@ -43,5 +45,49 @@ class UserView : AppCompatActivity() {
         numGamesTextView.text = "Number of Games: ${user.numGames}"
         numAddOnsTextView.text = "Number of Add-Ons: ${user.numAddOns}"
         lastSyncTextView.text = "Last Sync Date: ${user.lastSyncDate}"
+
+
+        gamesButton.setOnClickListener {
+            // Start GamesView activity and indicate it to show user games
+            try {
+            val intent = Intent(this@UserView, GamesView::class.java)
+            intent.putExtra("showGames", true)
+            startActivity(intent)
+            } catch (e: Exception) {
+                println(e)
+            }
+        }
+
+        addOnsButton.setOnClickListener {
+            // Start GamesView activity and indicate it to show expansions
+            val intent = Intent(this@UserView, GamesView::class.java)
+            intent.putExtra("showGames", false)
+            startActivity(intent)
+        }
+
+        clearDataButton.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Clear Data")
+                .setMessage("Are you sure you want to clear all data?")
+                .setPositiveButton("Clear") { _, _ ->
+                    // Call clearData function in DataManager to clear data
+                    dataManager.ClearData()
+                    // Finish the activity to simulate the application closing
+                    finish()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+
+        syncButton.setOnClickListener {
+            try {
+                val intent = Intent(this@UserView, SyncView::class.java)
+                startActivity(intent)
+            } catch (e: Exception) {
+                println(e)
+            }
+        }
+
+
     }
 }

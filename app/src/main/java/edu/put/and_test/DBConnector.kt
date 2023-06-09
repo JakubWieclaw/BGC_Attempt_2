@@ -157,4 +157,27 @@ class DBConnector(private val context: Context) {
         return User(username, GetGames().size, GetExpansions().size, Date(lastSyncDate))
     }
 
+    fun ClearData() {
+        context.deleteDatabase(databaseName)
+    }
+
+    fun SetLastSyncDate(date: Date) {
+        val query = "UPDATE User SET lastSyncDate = ?"
+        val statement = database.compileStatement(query)
+
+        statement.bindLong(1, date.time)
+
+        statement.executeUpdateDelete()
+    }
+    fun GetLastSyncDate(): Date? {
+        val cursor: Cursor = database.query("User", null, null, null, null, null, null)
+        if (!cursor.moveToFirst()) {
+            cursor.close()
+            return null
+        }
+        val lastSyncDate = cursor.getLong(cursor.getColumnIndex("lastSyncDate"))
+
+        cursor.close()
+        return Date(lastSyncDate)
+    }
 }

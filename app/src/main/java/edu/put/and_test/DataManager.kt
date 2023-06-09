@@ -1,7 +1,9 @@
 package edu.put.and_test
 
 import android.content.Context
+import edu.put.and_test.models.Game
 import edu.put.and_test.models.User
+import java.util.Date
 
 // DataManager class responsible for managing user data
 class DataManager(context: Context, apiUrl: String) {
@@ -50,5 +52,69 @@ class DataManager(context: Context, apiUrl: String) {
         } else {
             return false
         }
+    }
+
+    fun GetGames(): List<Game> {
+        return dbConnector.GetGames()
+    }
+
+    fun GetExpansions(): List<Game> {
+        return dbConnector.GetExpansions()
+    }
+
+    // Clear the local database
+    fun ClearData() {
+        dbConnector.ClearData()
+    }
+
+
+    fun CheckForSync(): Boolean {
+        // Retrieve the user from the local database
+        val user = dbConnector.GetUser()!!
+
+        // Get the current date and time
+        val currentDate = java.util.Date()
+
+        // Calculate the time difference between the current date and the last sync date
+        val timeDiff = currentDate.time - user.lastSyncDate.time
+
+        // Check if the time difference is less than 24 hours (86400000 milliseconds)
+        if (timeDiff >= 86400000) {
+            return true
+        } else {
+           return false
+        }
+    }
+
+
+    fun PerformSync() {
+        // Retrieve the user from the local database
+        val user = dbConnector.GetUser() ?: return
+
+        // Retrieve game and expansion lists from the Backend API
+        val (gamesList, expansionsList) = BackendApi.GetCollections(user.username) ?: return
+
+        // Get the current date and time
+        val currentDate = java.util.Date()
+
+        // Create a User object with the retrieved data
+        val updatedUser = User(user.username, gamesList.size, expansionsList.size, currentDate)
+
+        // Insert the user into the local database
+        dbConnector.InsertUser(updatedUser.username, currentDate)
+
+        // Store game data in the local database
+        dbConnector.GamesToDB(gamesList)
+
+        // Store expansion data in the local database
+        dbConnector.ExpansionsToDB(expansionsList)
+    }
+
+    fun SetLastSyncDate(date: Date) {
+        dbConnector.SetLastSyncDate(date)
+    }
+
+    fun GetLastSyncDate(): Date? {
+        return dbConnector.GetLastSyncDate()
     }
 }
