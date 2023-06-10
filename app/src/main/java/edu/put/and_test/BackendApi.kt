@@ -89,7 +89,8 @@ class BackendApi(private val apiUrl: String) {
     }
 
     fun GetSingleGame(game: Game): SingleGame? {
-        val boardgameApiResponse = dataDownloader.downloadData("${apiUrl}thing?id=${game.id}&stats=1")
+        val boardgameApiResponse =
+            dataDownloader.downloadData("${apiUrl}thing?id=${game.id}&stats=1")
         if (boardgameApiResponse == null) {
             // Game not found, show a notification
             return null

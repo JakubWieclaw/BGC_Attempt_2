@@ -172,6 +172,7 @@ class DBConnector(private val context: Context) {
 
         statement.executeUpdateDelete()
     }
+
     fun GetLastSyncDate(): Date? {
         val cursor: Cursor = database.query("User", null, null, null, null, null, null)
         if (!cursor.moveToFirst()) {
@@ -185,7 +186,8 @@ class DBConnector(private val context: Context) {
     }
 
     fun GetGame(id: Int): Game? {
-        val cursor: Cursor = database.query("Games", null, "id = ?", arrayOf(id.toString()), null, null, null)
+        val cursor: Cursor =
+            database.query("Games", null, "id = ?", arrayOf(id.toString()), null, null, null)
         if (!cursor.moveToFirst()) {
             cursor.close()
             return null

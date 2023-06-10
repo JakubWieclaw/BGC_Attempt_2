@@ -55,7 +55,6 @@ class SyncView : AppCompatActivity() {
 
                     onBackPressed()
                 }
-//                dataManager.PerformSync()
 
             }
         }

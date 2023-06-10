@@ -11,13 +11,9 @@ import edu.put.and_test.models.Game
 import com.bumptech.glide.Glide
 
 typealias ItemClickListener = (Int) -> Unit
+
 class GamesAdapter(private val context: Context, private val games: List<Game>) :
     RecyclerView.Adapter<GamesAdapter.GameViewHolder>() {
-
-    // Callback interface for item click events
-//    interface ItemClickListener {
-//        fun onItemClick(position: Int)
-//    }
 
 
     private var itemClickListener: ItemClickListener? = null
@@ -41,8 +37,10 @@ class GamesAdapter(private val context: Context, private val games: List<Game>) 
         return games.size
     }
 
-    inner class GameViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        private val serialNumberTextView: TextView = itemView.findViewById(R.id.serialNumberTextView)
+    inner class GameViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
+        private val serialNumberTextView: TextView =
+            itemView.findViewById(R.id.serialNumberTextView)
         private val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnailImageView)
         private val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
         private val yearTextView: TextView = itemView.findViewById(R.id.yearTextView)
@@ -65,7 +63,7 @@ class GamesAdapter(private val context: Context, private val games: List<Game>) 
 
         override fun onClick(v: View) {
             val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION ) {
+            if (position != RecyclerView.NO_POSITION) {
                 itemClickListener?.invoke(position)
             }
         }

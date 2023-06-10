@@ -10,6 +10,7 @@ import java.util.Date
 class DataManager(context: Context, apiUrl: String) {
     // Create an instance of the DBConnector class
     private var dbConnector = DBConnector(context)
+
     // Create an instance of the BackendApi class
     private val BackendApi = BackendApi(apiUrl)
 
@@ -85,7 +86,7 @@ class DataManager(context: Context, apiUrl: String) {
         if (timeDiff >= 86400000) {
             return true
         } else {
-           return false
+            return false
         }
     }
 
@@ -95,26 +96,6 @@ class DataManager(context: Context, apiUrl: String) {
         val user = GetSavedUser()!!
         dbConnector.ClearData()
         GetUser(user.username)
-//        val user = dbConnector.GetUser() ?: return
-//
-//        // Retrieve game and expansion lists from the Backend API
-//        val (gamesList, expansionsList) = BackendApi.GetCollections(user.username) ?: return
-//
-//        // Get the current date and time
-//        val currentDate = java.util.Date()
-//
-//        // Create a User object with the retrieved data
-//        val updatedUser = User(user.username, gamesList.size, expansionsList.size, currentDate)
-//
-//        dbConnector = DBConnector(ctx)
-//        // Insert the user into the local database
-//        dbConnector.InsertUser(updatedUser.username, currentDate)
-//
-//        // Store game data in the local database
-//        dbConnector.GamesToDB(gamesList)
-//
-//        // Store expansion data in the local database
-//        dbConnector.ExpansionsToDB(expansionsList)
     }
 
     fun SetLastSyncDate(date: Date) {

@@ -62,7 +62,8 @@ class MainActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 } finally {
-                    startButton.isEnabled = true // Enable the button after the operation is completed
+                    startButton.isEnabled =
+                        true // Enable the button after the operation is completed
                     startButton.isClickable = true
                     showProgressBar(false)
                 }

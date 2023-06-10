@@ -12,7 +12,7 @@ class DataDownloader {
         connection.requestMethod = "GET"
 
         val responseCode = try {
-             connection.responseCode
+            connection.responseCode
         } catch (e: Exception) {
             return null
         }
