@@ -34,7 +34,7 @@ class SingleGameView : AppCompatActivity() {
 
         singleGame?.let {
             titleTextView.text = it.game.name
-            descriptionTextView.text = it.description
+            descriptionTextView.text = android.text.Html.fromHtml(it.description, android.text.Html.FROM_HTML_MODE_LEGACY)
             rankTextView.text = "Rank: ${it.rank}"
             nameTextView.text = "Name: ${it.game.name}"
             yearTextView.text = "Year Published: ${it.game.yearPublished}"
