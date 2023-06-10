@@ -24,13 +24,12 @@ class DBConnector(private val context: Context) {
             e.printStackTrace()
         }
 
-        // Create the "Games" table if it doesn't exist
+        CreateTables()
+    }
+
+    private fun CreateTables() {
         CreateCollectionTableIfNotExist("Games")
-
-        // Create the "Expansions" table if it doesn't exist
         CreateCollectionTableIfNotExist("Expansions")
-
-        // Create the "User" table if it doesn't exist
         CreateUserTableIfNotExist()
     }
 
@@ -158,7 +157,11 @@ class DBConnector(private val context: Context) {
     }
 
     fun ClearData() {
-        context.deleteDatabase(databaseName)
+        database.delete("Games", null, null)
+        database.delete("Expansions", null, null)
+        database.delete("User", null, null)
+//        openOrCreateDatabase()
+        CreateTables()
     }
 
     fun SetLastSyncDate(date: Date) {
@@ -179,5 +182,19 @@ class DBConnector(private val context: Context) {
 
         cursor.close()
         return Date(lastSyncDate)
+    }
+
+    fun GetGame(id: Int): Game? {
+        val cursor: Cursor = database.query("Games", null, "id = ?", arrayOf(id.toString()), null, null, null)
+        if (!cursor.moveToFirst()) {
+            cursor.close()
+            return null
+        }
+        val name = cursor.getString(cursor.getColumnIndex("name"))
+        val yearPublished = cursor.getInt(cursor.getColumnIndex("yearPublished"))
+        val thumbnail = cursor.getString(cursor.getColumnIndex("thumbnail"))
+
+        cursor.close()
+        return Game(name, yearPublished, id, thumbnail)
     }
 }

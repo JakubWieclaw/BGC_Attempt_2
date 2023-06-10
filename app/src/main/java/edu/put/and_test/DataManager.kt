@@ -2,15 +2,18 @@ package edu.put.and_test
 
 import android.content.Context
 import edu.put.and_test.models.Game
+import edu.put.and_test.models.SingleGame
 import edu.put.and_test.models.User
 import java.util.Date
 
 // DataManager class responsible for managing user data
 class DataManager(context: Context, apiUrl: String) {
     // Create an instance of the DBConnector class
-    private val dbConnector = DBConnector(context)
+    private var dbConnector = DBConnector(context)
     // Create an instance of the BackendApi class
     private val BackendApi = BackendApi(apiUrl)
+
+    private val ctx = context
 
     // Retrieve a User object for the given username
     fun GetUser(username: String): User? {
@@ -89,25 +92,29 @@ class DataManager(context: Context, apiUrl: String) {
 
     fun PerformSync() {
         // Retrieve the user from the local database
-        val user = dbConnector.GetUser() ?: return
-
-        // Retrieve game and expansion lists from the Backend API
-        val (gamesList, expansionsList) = BackendApi.GetCollections(user.username) ?: return
-
-        // Get the current date and time
-        val currentDate = java.util.Date()
-
-        // Create a User object with the retrieved data
-        val updatedUser = User(user.username, gamesList.size, expansionsList.size, currentDate)
-
-        // Insert the user into the local database
-        dbConnector.InsertUser(updatedUser.username, currentDate)
-
-        // Store game data in the local database
-        dbConnector.GamesToDB(gamesList)
-
-        // Store expansion data in the local database
-        dbConnector.ExpansionsToDB(expansionsList)
+        val user = GetSavedUser()!!
+        dbConnector.ClearData()
+        GetUser(user.username)
+//        val user = dbConnector.GetUser() ?: return
+//
+//        // Retrieve game and expansion lists from the Backend API
+//        val (gamesList, expansionsList) = BackendApi.GetCollections(user.username) ?: return
+//
+//        // Get the current date and time
+//        val currentDate = java.util.Date()
+//
+//        // Create a User object with the retrieved data
+//        val updatedUser = User(user.username, gamesList.size, expansionsList.size, currentDate)
+//
+//        dbConnector = DBConnector(ctx)
+//        // Insert the user into the local database
+//        dbConnector.InsertUser(updatedUser.username, currentDate)
+//
+//        // Store game data in the local database
+//        dbConnector.GamesToDB(gamesList)
+//
+//        // Store expansion data in the local database
+//        dbConnector.ExpansionsToDB(expansionsList)
     }
 
     fun SetLastSyncDate(date: Date) {
@@ -116,5 +123,9 @@ class DataManager(context: Context, apiUrl: String) {
 
     fun GetLastSyncDate(): Date? {
         return dbConnector.GetLastSyncDate()
+    }
+
+    fun GetSingleGame(game: Game): SingleGame? {
+        return BackendApi.GetSingleGame(game)
     }
 }

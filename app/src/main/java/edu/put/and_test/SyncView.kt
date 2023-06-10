@@ -2,10 +2,16 @@ package edu.put.and_test
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings.Global
+import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SyncView : AppCompatActivity() {
     private lateinit var lastSyncTextView: TextView
@@ -37,8 +43,20 @@ class SyncView : AppCompatActivity() {
                 // Perform the synchronization
                 showConfirmationDialog()
             } else {
-                dataManager.PerformSync()
-                onBackPressed()
+                GlobalScope.launch(Dispatchers.Main) {
+                    // Show the progress bar
+                    progressBar.visibility = View.VISIBLE
+
+                    // Perform the synchronization
+                    withContext(Dispatchers.IO) { dataManager.PerformSync() }
+
+                    // Hide the progress bar
+                    progressBar.visibility = View.GONE
+
+                    onBackPressed()
+                }
+//                dataManager.PerformSync()
+
             }
         }
     }
@@ -49,8 +67,19 @@ class SyncView : AppCompatActivity() {
             .setMessage("The last synchronization was performed less than 24 hours ago. Do you want to synchronize again?")
             .setPositiveButton("Yes") { _, _ ->
                 // Perform the synchronization
-                dataManager.PerformSync()
-                onBackPressed()
+                GlobalScope.launch(Dispatchers.Main) {
+                    // Show the progress bar
+                    progressBar.visibility = View.VISIBLE
+
+                    // Perform the synchronization
+                    withContext(Dispatchers.IO) { dataManager.PerformSync() }
+
+                    // Hide the progress bar
+                    progressBar.visibility = View.GONE
+
+                    onBackPressed()
+                }
+
             }
             .setNegativeButton("No", null)
             .show()

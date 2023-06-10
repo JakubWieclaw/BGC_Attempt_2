@@ -15,6 +15,9 @@
         android:theme="@style/Theme.And_test"
         tools:targetApi="31">
         <activity
+            android:name=".SingleGameView"
+            android:exported="false" />
+        <activity
             android:name=".SyncView"
             android:exported="false" />
         <activity

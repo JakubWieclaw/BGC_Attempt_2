@@ -11,7 +11,11 @@ class DataDownloader {
         val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
 
-        val responseCode = connection.responseCode
+        val responseCode = try {
+             connection.responseCode
+        } catch (e: Exception) {
+            return null
+        }
 
         if (responseCode != HttpURLConnection.HTTP_OK) {
             return null

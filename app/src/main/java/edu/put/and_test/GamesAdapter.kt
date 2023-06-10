@@ -10,12 +10,26 @@ import androidx.recyclerview.widget.RecyclerView
 import edu.put.and_test.models.Game
 import com.bumptech.glide.Glide
 
+typealias ItemClickListener = (Int) -> Unit
 class GamesAdapter(private val context: Context, private val games: List<Game>) :
     RecyclerView.Adapter<GamesAdapter.GameViewHolder>() {
 
+    // Callback interface for item click events
+//    interface ItemClickListener {
+//        fun onItemClick(position: Int)
+//    }
+
+
+    private var itemClickListener: ItemClickListener? = null
+
+    fun setItemClickListener(listener: ItemClickListener) {
+        itemClickListener = listener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameViewHolder {
         val itemView = LayoutInflater.from(context).inflate(R.layout.item_game_table, parent, false)
-        return GameViewHolder(itemView)
+        val viewHolder = GameViewHolder(itemView)
+        return viewHolder
     }
 
     override fun onBindViewHolder(holder: GameViewHolder, position: Int) {
@@ -27,13 +41,15 @@ class GamesAdapter(private val context: Context, private val games: List<Game>) 
         return games.size
     }
 
-    inner class GameViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class GameViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         private val serialNumberTextView: TextView = itemView.findViewById(R.id.serialNumberTextView)
         private val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnailImageView)
         private val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
         private val yearTextView: TextView = itemView.findViewById(R.id.yearTextView)
 
-
+        init {
+            itemView.setOnClickListener(this)
+        }
 
         fun bind(game: Game) {
             serialNumberTextView.text = (adapterPosition + 1).toString()
@@ -47,6 +63,11 @@ class GamesAdapter(private val context: Context, private val games: List<Game>) 
             yearTextView.text = game.yearPublished.toString()
         }
 
+        override fun onClick(v: View) {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION ) {
+                itemClickListener?.invoke(position)
+            }
+        }
     }
 }
-

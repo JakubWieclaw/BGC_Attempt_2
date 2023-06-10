@@ -20,12 +20,11 @@ class UserView : AppCompatActivity() {
     private lateinit var syncButton: Button
     private lateinit var clearDataButton: Button
 
+    private lateinit var dataManager: DataManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_view)
-
-        // Create DataManager instance with API URL
-        val dataManager = DataManager(this, "https://www.boardgamegeek.com/xmlapi2/")
 
         // Initialize the UI elements
         usernameTextView = findViewById(R.id.usernameTextView)
@@ -37,25 +36,20 @@ class UserView : AppCompatActivity() {
         syncButton = findViewById(R.id.syncButton)
         clearDataButton = findViewById(R.id.clearDataButton)
 
-        // Retrieve the saved user data from the DataManager
-        val user: User = dataManager.GetSavedUser()!!
+        // Create DataManager instance with API URL
+        dataManager = DataManager(this, "https://www.boardgamegeek.com/xmlapi2/")
 
-        // Display the user data on the UI elements
+        val user = dataManager.GetSavedUser()!!
         usernameTextView.text = "Username: ${user.username}"
         numGamesTextView.text = "Number of Games: ${user.numGames}"
         numAddOnsTextView.text = "Number of Add-Ons: ${user.numAddOns}"
         lastSyncTextView.text = "Last Sync Date: ${user.lastSyncDate}"
 
-
         gamesButton.setOnClickListener {
             // Start GamesView activity and indicate it to show user games
-            try {
             val intent = Intent(this@UserView, GamesView::class.java)
             intent.putExtra("showGames", true)
             startActivity(intent)
-            } catch (e: Exception) {
-                println(e)
-            }
         }
 
         addOnsButton.setOnClickListener {
@@ -80,14 +74,33 @@ class UserView : AppCompatActivity() {
         }
 
         syncButton.setOnClickListener {
-            try {
-                val intent = Intent(this@UserView, SyncView::class.java)
-                startActivity(intent)
-            } catch (e: Exception) {
-                println(e)
-            }
+            val intent = Intent(this@UserView, SyncView::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        try {
+            refreshUserData()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
+    }
+
+    private fun refreshUserData() {
+//        val username = intent.getStringExtra("user") ?: return
+
+        // Retrieve the user data from the DataManager
+        val user: User = dataManager.GetSavedUser()!!
+
+        // Update the UI with the retrieved user data
+        usernameTextView.text = "Username: ${user.username}"
+        numGamesTextView.text = "Number of Games: ${user.numGames}"
+        numAddOnsTextView.text = "Number of Add-Ons: ${user.numAddOns}"
+        lastSyncTextView.text = "Last Sync Date: ${user.lastSyncDate}"
 
     }
+
 }

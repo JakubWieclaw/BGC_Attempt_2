@@ -38,6 +38,9 @@ class MainActivity : AppCompatActivity() {
         val startButton: Button = findViewById(R.id.button_start)
 
         startButton.setOnClickListener {
+            startButton.isEnabled = false
+            startButton.isClickable = false// Disable the button
+
             val usernameEditText: EditText = findViewById(R.id.username)
             val username = usernameEditText.text.toString()
 
@@ -49,9 +52,13 @@ class MainActivity : AppCompatActivity() {
                     handleApiResponse(user)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                } finally {
+                    startButton.isEnabled = true  // Enable the button after the operation is completed
+                    startButton.isClickable = true
                 }
             }
         }
+
     }
 
         // Handle the API response and take appropriate actions
@@ -66,6 +73,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // User found, navigate to UserView activity
                 val intent = Intent(this@MainActivity, UserView::class.java)
+                //intent.putExtra("user", user.username)
                 startActivity(intent)
             }
         }
